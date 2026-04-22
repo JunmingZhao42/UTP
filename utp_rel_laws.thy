@@ -508,7 +508,7 @@ lemma ustar_rep_eq [rel]: "\<lbrakk>P\<^sup>\<star>\<rbrakk>\<^sub>U = \<lbrakk>
 proof 
   have "((a, b) \<in> \<lbrakk>P\<rbrakk>\<^sub>U\<^sup>*) \<Longrightarrow> (a,b) \<in> \<lbrakk>P\<^sup>\<star>\<rbrakk>\<^sub>U" for a b
     apply (induct rule: rtrancl.induct)
-     apply (simp_all add: pred_rel_def ustar_def)
+     apply (simp_all add: pred_rel_def ustar_def Sup_apply)
      apply (metis (full_types) power.power.power_0 prod.simps(2) skip_def)
     apply (metis (mono_tags, lifting) case_prodI upred_semiring.power_Suc2 utp_rel.seq_def)
     done
@@ -516,7 +516,7 @@ proof
     by auto
 next
   have "((a, b) \<in> \<lbrakk>P\<^sup>\<star>\<rbrakk>\<^sub>U) \<Longrightarrow> (a,b) \<in> \<lbrakk>P\<rbrakk>\<^sub>U\<^sup>*" for a b
-    apply (simp add: ustar_def pred_rel_def)
+    apply (simp add: ustar_def pred_rel_def Sup_apply)
     apply (metis mem_Collect_eq pred_rel_def rtrancl_power upower_interp)
     done
   then show "\<lbrakk>P\<^sup>\<star>\<rbrakk>\<^sub>U \<subseteq> \<lbrakk>P\<rbrakk>\<^sub>U\<^sup>*"

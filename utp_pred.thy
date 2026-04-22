@@ -161,6 +161,18 @@ end
 
 unbundle utp_lattice_syntax
 
+text \<open> The laws for applying functional infimum hamper proof automation. We therefore remove these
+  laws from the simplifer, and instead add their definitional equations to the predicate laws. \<close>
+
+declare Inf_apply [simp del]
+declare INF_apply [simp del]
+
+declare Sup_apply [simp del]
+declare SUP_apply [simp del]
+
+declare Inf_fun_def [pred]
+declare Sup_fun_def [pred]
+
 subsection \<open> Substitution Laws \<close>
 
 lemma subst_pred [usubst]:
