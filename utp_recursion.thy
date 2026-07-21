@@ -6,16 +6,21 @@ begin
 
 subsection \<open> Syntax \<close>
 
+
 syntax
-  "_utp_mu" :: "pttrn \<Rightarrow> logic \<Rightarrow> logic" ("\<mu> _ \<bullet> _" [0, 10] 10)
-  "_utp_nu" :: "pttrn \<Rightarrow> logic \<Rightarrow> logic" ("\<nu> _ \<bullet> _" [0, 10] 10)
+  "_utp_mu" :: "pttrn \<Rightarrow> logic \<Rightarrow> logic" ("\<mu> _/. _" [0, 10] 10)
+  "_utp_nu" :: "pttrn \<Rightarrow> logic \<Rightarrow> logic" ("\<nu> _/. _" [0, 10] 10)
 
 notation lfp ("\<nu>")
 notation gfp ("\<mu>")
 
 translations
-  "\<nu> X \<bullet> P" == "CONST lfp (\<lambda> X. P)"
-  "\<mu> X \<bullet> P" == "CONST gfp (\<lambda> X. P)"
+  "\<nu> X. P" == "CONST lfp (\<lambda> X. P)"
+  "\<mu> X. P" == "CONST gfp (\<lambda> X. P)"
+
+syntax_consts
+  "_utp_mu" \<rightleftharpoons> gfp and
+  "_utp_nu" \<rightleftharpoons> lfp
 
 text \<open> The mu and nu operators correspond to the greatest and least fixed-points of the refinement lattice. \<close>
 
@@ -27,16 +32,16 @@ lemma gfp_is_ref_lfp: "gfp = ref_lattice.lfp"
 
 subsection \<open> Fixed-point Laws \<close>
   
-lemma mu_id: "(\<mu> X \<bullet> X) = true"
+lemma mu_id: "(\<mu> X. X) = true"
   by (simp add: gfp_eqI mono_def predicate1I true_pred_def)
 
-lemma mu_const: "(\<mu> X \<bullet> P) = P"
+lemma mu_const: "(\<mu> X. P) = P"
   by (simp add: gfp_const)
 
-lemma nu_id: "(\<nu> X \<bullet> X) = false"
+lemma nu_id: "(\<nu> X. X) = false"
   by (simp add: SEXP_def antisym false_pred_def lfp_lowerbound predicate1I)
 
-lemma nu_const: "(\<nu> X \<bullet> P) = P"
+lemma nu_const: "(\<nu> X. P) = P"
   by (simp add: lfp_const)
 
 lemma mu_refine_intro:

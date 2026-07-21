@@ -22,10 +22,10 @@ syntax "_ndet_assign" :: "svid \<Rightarrow> logic" ("_ := *" [75] 76)
 translations "_ndet_assign x" == "CONST ndet_assign x"
 
 definition while_top :: "(bool, 's) expr \<Rightarrow> 's hrel \<Rightarrow> 's hrel" where 
-"while_top b P = (\<nu> X \<bullet> ((P ;; X) \<lhd> b \<rhd> II))"
+"while_top b P = (\<nu> X. ((P ;; X) \<lhd> b \<rhd> II))"
 
 definition while_bot :: "(bool, 's) expr \<Rightarrow> 's hrel \<Rightarrow> 's hrel" where 
-"while_bot b P = (\<mu> X \<bullet> ((P ;; X) \<lhd> b \<rhd> II))"
+"while_bot b P = (\<mu> X. ((P ;; X) \<lhd> b \<rhd> II))"
 
 adhoc_overloading uwhile == while_top
 
@@ -171,9 +171,9 @@ theorem while_unfold:
 proof -
   have m:"mono (\<lambda>X. (P ;; X) \<lhd> b \<rhd> II)"
     by (simp add: cond_seqr_mono)
-  have "(while b do P od) = (\<nu> X \<bullet> (P ;; X) \<lhd> b \<rhd> II)"
+  have "(while b do P od) = (\<nu> X. (P ;; X) \<lhd> b \<rhd> II)"
     by (simp add: while_top_def)
-  also have "... = ((P ;; (\<nu> X \<bullet> (P ;; X) \<lhd> b \<rhd> II)) \<lhd> b \<rhd> II)"
+  also have "... = ((P ;; (\<nu> X. (P ;; X) \<lhd> b \<rhd> II)) \<lhd> b \<rhd> II)"
     by (subst lfp_unfold, simp_all add: m)
   also have "... = ((P ;; while b do P od) \<lhd> b \<rhd> II)"
     by (simp add: while_top_def)
@@ -195,9 +195,9 @@ theorem while_bot_unfold:
 proof -
   have m:"mono (\<lambda>X. (P ;; X) \<lhd> b \<rhd> II)"
     by (simp add: cond_seqr_mono)
-  have "(while\<^sub>\<bottom> b do P od) = (\<mu> X \<bullet> (P ;; X) \<lhd> b \<rhd> II)"
+  have "(while\<^sub>\<bottom> b do P od) = (\<mu> X. (P ;; X) \<lhd> b \<rhd> II)"
     by (simp add: while_bot_def)
-  also have "... = ((P ;; (\<mu> X \<bullet> (P ;; X) \<lhd> b \<rhd> II)) \<lhd> b \<rhd> II)"
+  also have "... = ((P ;; (\<mu> X. (P ;; X) \<lhd> b \<rhd> II)) \<lhd> b \<rhd> II)"
     by (subst gfp_unfold, simp_all add: m)
   also have "... = ((P ;; while\<^sub>\<bottom> b do P od) \<lhd> b \<rhd> II)"
     by (simp add: while_bot_def)
@@ -207,7 +207,7 @@ qed
 theorem while_bot_false: "while\<^sub>\<bottom> False do P od = II"
   by (pred_auto add: while_bot_def gfp_const)
 
-theorem while_bot_true: "while\<^sub>\<bottom> True do P od = (\<mu> X \<bullet> P ;; X)"
+theorem while_bot_true: "while\<^sub>\<bottom> True do P od = (\<mu> X. P ;; X)"
   by (simp add: while_bot_def alpha)
 
 text \<open> An infinite loop with a feasible body corresponds to a program error (non-termination). \<close>

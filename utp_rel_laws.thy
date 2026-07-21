@@ -548,24 +548,24 @@ proof -
   finally show ?thesis .
 qed
 
-lemma ustar_refines_nu: "(\<nu> X \<bullet> (P ;; X) \<sqinter> II) \<sqsubseteq> P\<^sup>\<star>"
+lemma ustar_refines_nu: "(\<nu> X. (P ;; X) \<sqinter> II) \<sqsubseteq> P\<^sup>\<star>"
 proof (rule ustar_inductl[where R="II", simplified])
-  show "(\<nu> X \<bullet> (P ;; X) \<sqinter> II) \<sqsubseteq> II"
+  show "(\<nu> X. (P ;; X) \<sqinter> II) \<sqsubseteq> II"
     by (simp add: ref_by_pred_is_leq, metis le_supE lfp_greatest)
-  show "(\<nu> X \<bullet> (P ;; X) \<sqinter> II) \<sqsubseteq> P ;; (\<nu> X \<bullet> (P ;; X) \<sqinter> II)" (is "?lhs \<sqsubseteq> ?rhs")
+  show "(\<nu> X. (P ;; X) \<sqinter> II) \<sqsubseteq> P ;; (\<nu> X. (P ;; X) \<sqinter> II)" (is "?lhs \<sqsubseteq> ?rhs")
   proof -
-    have "?lhs = (P ;; (\<nu> X \<bullet> (P ;; X) \<sqinter> II)) \<sqinter> II"
+    have "?lhs = (P ;; (\<nu> X. (P ;; X) \<sqinter> II)) \<sqinter> II"
       by (rule lfp_unfold, simp add: mono)
     also have "... \<sqsubseteq> ?rhs" by simp
     finally show ?thesis .
   qed
 qed
 
-lemma ustar_as_nu: "P\<^sup>\<star> = (\<nu> X \<bullet> (P ;; X) \<sqinter> II)"
+lemma ustar_as_nu: "P\<^sup>\<star> = (\<nu> X. (P ;; X) \<sqinter> II)"
 proof (rule ref_antisym)
-  show "(\<nu> X \<bullet> (P ;; X) \<sqinter> II) \<sqsubseteq> P\<^sup>\<star>"
+  show "(\<nu> X. (P ;; X) \<sqinter> II) \<sqsubseteq> P\<^sup>\<star>"
     by (simp add: ustar_refines_nu)
-  show "P\<^sup>\<star> \<sqsubseteq> (\<nu> X \<bullet> (P ;; X) \<sqinter> II)"
+  show "P\<^sup>\<star> \<sqsubseteq> (\<nu> X. (P ;; X) \<sqinter> II)"
     by (metis lfp_lowerbound pred_ref_iff_le sup_commute ustar_sub_unfoldl) 
 qed
 

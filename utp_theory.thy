@@ -169,18 +169,19 @@ abbreviation utp_lfp ("\<^bold>\<mu>") where
 end
 
 syntax
-  "_tmu" :: "logic \<Rightarrow> pttrn \<Rightarrow> logic \<Rightarrow> logic" ("\<^bold>\<mu>\<index> _ \<bullet> _" [0, 10] 10)
-  "_tnu" :: "logic \<Rightarrow> pttrn \<Rightarrow> logic \<Rightarrow> logic" ("\<^bold>\<nu>\<index> _ \<bullet> _" [0, 10] 10)
+  "_tmu" :: "logic \<Rightarrow> pttrn \<Rightarrow> logic \<Rightarrow> logic" ("\<^bold>\<mu>\<index> _/. _" [0, 10] 10)
+  "_tnu" :: "logic \<Rightarrow> pttrn \<Rightarrow> logic \<Rightarrow> logic" ("\<^bold>\<nu>\<index> _/. _" [0, 10] 10)
 
 notation gfp ("\<mu>")
 notation lfp ("\<nu>")
 
 translations
-  "\<^bold>\<mu>\<^bsub>H\<^esub> X \<bullet> P" == "CONST LEAST_FP (CONST utp_order H) (\<lambda> X. P)"  
-  "\<^bold>\<nu>\<^bsub>H\<^esub> X \<bullet> P" == "CONST GREATEST_FP (CONST utp_order H) (\<lambda> X. P)"
+  "\<^bold>\<mu>\<^bsub>H\<^esub> X. P" == "CONST LEAST_FP (CONST utp_order H) (\<lambda> X. P)"  
+  "\<^bold>\<nu>\<^bsub>H\<^esub> X. P" == "CONST GREATEST_FP (CONST utp_order H) (\<lambda> X. P)"
 
-thm Sup_least Sup_upper UNIV_I antisym_conv subsetI upred_lattice.weak.inf_greatest upred_lattice.weak.inf_lower upred_lattice_carrier upred_lattice_le
-                                                                                                                                                
+syntax_consts
+  "_tmu" \<rightleftharpoons> "utp_order" and
+  "_tnu" \<rightleftharpoons> "utp_order"
 
 lemma upred_lattice_inf:
   "Lattice.inf \<P> A = \<Sqinter> A"
@@ -344,7 +345,7 @@ begin
 
   theorem utp_lfp_def:
     assumes "Monotonic F" "F \<in> \<lbrakk>\<H>\<rbrakk>\<^sub>H \<rightarrow> \<lbrakk>\<H>\<rbrakk>\<^sub>H"
-    shows "\<^bold>\<mu> F = (\<mu> X \<bullet> F(\<H>(X)))"
+    shows "\<^bold>\<mu> F = (\<mu> X. F(\<H>(X)))"
   proof (rule ref_antisym)
     have ne: "{P. (P is \<H>) \<and> F P \<sqsubseteq> P} \<noteq> {}"
     proof -
@@ -353,7 +354,7 @@ begin
       thus ?thesis
         by (auto, rule_tac x="\<^bold>\<top>" in exI, auto simp add: top_healthy)
     qed
-    show "\<^bold>\<mu> F \<sqsubseteq> (\<mu> X \<bullet> F (\<H> X))"
+    show "\<^bold>\<mu> F \<sqsubseteq> (\<mu> X. F (\<H> X))"
     proof -
       have "\<Sqinter>{P. (P is \<H>) \<and> F(P) \<sqsubseteq> P} \<sqsubseteq> \<Sqinter>{P. F(\<H>(P)) \<sqsubseteq> P}"
       proof -
@@ -383,7 +384,7 @@ begin
       with ne show ?thesis
         by (simp add: LEAST_FP_def ref_lattice.gfp_def, subst healthy_inf_cont, auto simp add: gfp_is_ref_lfp ref_lattice.lfp_def)
     qed
-    from ne show "(\<mu> X \<bullet> F (\<H> X)) \<sqsubseteq> \<^bold>\<mu> F"
+    from ne show "(\<mu> X. F (\<H> X)) \<sqsubseteq> \<^bold>\<mu> F"
       apply (simp add: LEAST_FP_def ref_lattice.gfp_def, subst healthy_inf_cont, auto simp add: gfp_is_ref_lfp)
       apply (rule ref_lattice.Inf_greatest)
       apply (auto simp add: Healthy_def Inf_lower ref_lattice.lfp_lowerbound)

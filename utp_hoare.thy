@@ -177,7 +177,7 @@ lemma while_hoare_r [hoare_safe]:
 proof (simp add: while_top_def hoare_r_def assms)
   have "(p\<^sup>< \<longrightarrow> (\<not> b \<and> p)\<^sup>>)\<^sub>e \<sqsubseteq> S ;; (p\<^sup>< \<longrightarrow> (\<not> b \<and> p)\<^sup>>)\<^sub>e \<lhd> b \<rhd> II"
     using assms by pred_auto
-  then show "(p\<^sup>< \<longrightarrow> (\<not> b \<and> p)\<^sup>>)\<^sub>e \<sqsubseteq> (\<nu> X \<bullet> S ;; X \<lhd> b \<rhd> II)"
+  then show "(p\<^sup>< \<longrightarrow> (\<not> b \<and> p)\<^sup>>)\<^sub>e \<sqsubseteq> (\<nu> X. S ;; X \<lhd> b \<rhd> II)"
     by (simp add: pred_ref_iff_le lfp_lowerbound)
 qed
 
@@ -220,12 +220,12 @@ lemma while_term_hoare_r:
   assumes "\<And> z::nat. \<^bold>{p \<and> b \<and> v = \<guillemotleft>z\<guillemotright>\<^bold>}S\<^bold>{p \<and> v < \<guillemotleft>z\<guillemotright>\<^bold>}"
   shows "\<^bold>{p\<^bold>}while\<^sub>\<bottom> b do S od\<^bold>{\<not>b \<and> p\<^bold>}"
 proof -
-  have "((p\<^sup><)\<^sub>e \<longrightarrow> ((\<not> b \<and> p)\<^sup>>)\<^sub>e) \<sqsubseteq> (\<mu> X \<bullet> S ;; X \<lhd> b \<rhd> II)"
+  have "((p\<^sup><)\<^sub>e \<longrightarrow> ((\<not> b \<and> p)\<^sup>>)\<^sub>e) \<sqsubseteq> (\<mu> X. S ;; X \<lhd> b \<rhd> II)"
   proof (rule mu_refine_intro)
     from assms show "((p\<^sup><)\<^sub>e \<longrightarrow> ((\<not> b \<and> p)\<^sup>>)\<^sub>e) \<sqsubseteq> S ;; ((p\<^sup><)\<^sub>e \<longrightarrow> ((\<not> b \<and> p)\<^sup>>)\<^sub>e) \<lhd> b \<rhd> II"
       by pred_auto
     let ?E = "\<lambda> n. ((p \<and> v < \<guillemotleft>n\<guillemotright>)\<^sup><)\<^sub>e"
-    show "((p\<^sup><)\<^sub>e \<and> (\<mu> X \<bullet> S ;; X \<lhd> b \<rhd> II)) = ((p\<^sup><)\<^sub>e \<and> (\<nu> X \<bullet> S ;; X \<lhd> b \<rhd> II))"
+    show "((p\<^sup><)\<^sub>e \<and> (\<mu> X. S ;; X \<lhd> b \<rhd> II)) = ((p\<^sup><)\<^sub>e \<and> (\<nu> X. S ;; X \<lhd> b \<rhd> II))"
     proof (rule constr_fp_uniq[where E="?E"])
       show "mono (\<lambda>X. S ;; X \<lhd> b \<rhd> II)"
         by (rule cond_seqr_mono)
@@ -277,7 +277,7 @@ proof (rule pre_weak_rel[of _ "p\<^sup><" ], goal_cases)
   from I0 show ?case by expr_auto
 next
   case 2
-  have "(p\<^sup>< \<longrightarrow> q'\<^sup>>)\<^sub>e \<sqsubseteq> (\<mu> X \<bullet> Q ;; X \<lhd> b \<rhd> II)"
+  have "(p\<^sup>< \<longrightarrow> q'\<^sup>>)\<^sub>e \<sqsubseteq> (\<mu> X. Q ;; X \<lhd> b \<rhd> II)"
   proof (rule mu_rec_total_utp_rule[where e=e, OF WF])
     show "mono (\<lambda>X. Q ;; X \<lhd> b \<rhd> II)"
       by (simp add: cond_seqr_mono)
