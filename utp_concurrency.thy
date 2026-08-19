@@ -281,4 +281,15 @@ lemma skip_merge_swap: "swap\<^sub>m ;; skip\<^sub>m = skip\<^sub>m"
 lemma par_sep_swap: "P \<parallel>\<^sub>s Q ;; swap\<^sub>m = Q \<parallel>\<^sub>s P"
   by (pred_auto)
 
+lemma par_by_merge_comm:
+  assumes swap: "swap\<^sub>m ;; M = M"
+  shows "P \<parallel>\<^bsub>M\<^esub> Q = Q \<parallel>\<^bsub>M\<^esub> P"
+proof -
+  have "Q \<parallel>\<^bsub>M\<^esub> P = ((P \<parallel>\<^sub>s Q) ;; swap\<^sub>m) ;; M"
+    by (simp only: par_by_merge_def par_sep_swap)
+  also have "... = P \<parallel>\<^bsub>M\<^esub> Q"
+    by (simp only: seqr_assoc swap par_by_merge_def)
+  finally show ?thesis ..
+qed
+
 end
