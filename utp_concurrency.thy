@@ -71,7 +71,8 @@ text \<open> A symmetric merge is one for which swapping the order of the merged
   has no effect. We represent this by the following healthiness condition that states that
   @{term "swap\<^sub>m"} is a left-unit. \<close>
 
-abbreviation SymMerge :: "'\<alpha> merge \<Rightarrow> '\<alpha> merge" where
+abbreviation SymMerge ::
+  "(('\<alpha>, '\<beta>, '\<beta>) mrg, '\<gamma>) urel \<Rightarrow> (('\<alpha>, '\<beta>, '\<beta>) mrg, '\<gamma>) urel" where
 "SymMerge(M) \<equiv> (swap\<^sub>m ;; M)"
 
 subsection \<open> Separating Simulations \<close>
@@ -188,7 +189,9 @@ text \<open> Associativity of a merge means that if we construct a three way mer
   the two way merge in an appropriate way.
 \<close>
   
-definition ThreeWayMerge :: "'\<alpha> merge \<Rightarrow> (('\<alpha>, '\<alpha>, ('\<alpha>, '\<alpha>, '\<alpha>) mrg) mrg, '\<alpha>) urel" ("\<^bold>M3'(_')") where
+definition ThreeWayMerge ::
+  "(('\<alpha>, '\<beta>, '\<beta>) mrg, '\<beta>) urel \<Rightarrow> (('\<alpha>, '\<beta>, ('\<alpha>, '\<beta>, '\<beta>) mrg) mrg, '\<beta>) urel"
+  ("\<^bold>M3'(_')") where
 [pred, rel]: "ThreeWayMerge M = (($0:\<^bold>v\<^sup>> = $0:\<^bold>v\<^sup>< \<and> $1:\<^bold>v\<^sup>> = $1:0:\<^bold>v\<^sup>< \<and> $<:\<^bold>v\<^sup>> = $<:\<^bold>v\<^sup><)\<^sub>e ;; M ;; U0 \<and> ($1:\<^bold>v\<^sup>> = $1:1:\<^bold>v\<^sup>< \<and> $<:\<^bold>v\<^sup>> = $<:\<^bold>v\<^sup><)\<^sub>e) ;; M"
   
 text \<open> The next definition rotates the inputs to a three way merge to the left one place. \<close>
@@ -197,7 +200,7 @@ abbreviation rotate\<^sub>m where "rotate\<^sub>m \<equiv> (0:\<^bold>v,1:0:\<^b
 
 text \<open> Finally, a merge is associative if rotating the inputs does not effect the output. \<close>
   
-definition AssocMerge :: "'\<alpha> merge \<Rightarrow> bool" where
+definition AssocMerge :: "(('\<alpha>, '\<beta>, '\<beta>) mrg, '\<beta>) urel \<Rightarrow> bool" where
 [pred, rel]: "AssocMerge M = (rotate\<^sub>m ;; \<^bold>M3(M) = \<^bold>M3(M))"
     
 subsection \<open> Parallel Operators \<close>
