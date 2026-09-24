@@ -61,6 +61,10 @@ text \<open> skip is the merge predicate which ignores the output of both parall
 definition skip\<^sub>m :: "'\<alpha> merge" where
 [pred, rel]: "skip\<^sub>m = ($\<^bold>v\<^sup>> = $<:\<^bold>v\<^sup><)\<^sub>e"
 
+lemma skip_merge_eval:
+  "merge_eval skip\<^sub>m s0 l r z \<longleftrightarrow> z = s0"
+  by pred_auto
+
 text \<open> swap is a predicate that the swaps the left and right indices; it is used to specify
         commutativity of the parallel operator \<close>
 
