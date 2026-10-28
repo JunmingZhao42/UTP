@@ -55,7 +55,13 @@ where
 "merge_eval M s p q z \<equiv>
   M ((\<lparr>mrg_prior\<^sub>v = s, mrg_left\<^sub>v = p, mrg_right\<^sub>v = q, \<dots> = ()\<rparr>
       :: ('\<alpha>, '\<alpha>, '\<alpha>) mrg), z)"
-  
+
+text \<open> mergeable:
+  M allows some final state for every prior state s and branch results p and q. \<close>
+
+abbreviation mergeable :: "'\<alpha> merge \<Rightarrow> bool" where
+"mergeable M \<equiv> (\<forall>s p q. \<exists>z. merge_eval M s p q z)"
+
 text \<open> skip is the merge predicate which ignores the output of both parallel predicates \<close>
 
 definition skip\<^sub>m :: "'\<alpha> merge" where
