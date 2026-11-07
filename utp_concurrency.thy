@@ -386,13 +386,23 @@ lemma par_by_merge_cyclic:
   by (rule ext, clarify; simp only: par_by_merge_eval;
       use assms[unfolded AssocMerge_cyclic_eval] in blast)
 
-text \<open>@{const AssocMerge} lets us rotate the three operands. Symmetry then swaps the
-  operands of the outer parallel, giving ordinary associativity. Unlike the equivalence
-  above, this rule therefore needs symmetry. Neither result requires operand healthiness.\<close>
-
 lemma par_by_merge_assoc:
   assumes "M is SymMerge" "AssocMerge M"
   shows "(P \<parallel>\<^bsub>M\<^esub> Q) \<parallel>\<^bsub>M\<^esub> R = P \<parallel>\<^bsub>M\<^esub> (Q \<parallel>\<^bsub>M\<^esub> R)"
   by (subst par_by_merge_cyclic[OF assms(2)], rule par_by_merge_comm[OF assms(1)])
+
+text \<open>Parallel is associative on operands whose branch observations satisfy @{term G}
+  whenever the two merge orders agree on triples of such observations.\<close>
+
+lemma par_by_merge_assoc_on:
+  assumes fold: "\<And>x p q r z. \<lbrakk> G x p; G x q; G x r \<rbrakk> \<Longrightarrow>
+      (\<exists>u. merge_eval M x p q u \<and> merge_eval M x u r z) =
+      (\<exists>u. merge_eval M x q r u \<and> merge_eval M x p u z)"
+    and operands: "\<And>x z. P (x,z) \<Longrightarrow> G x z"
+      "\<And>x z. Q (x,z) \<Longrightarrow> G x z"
+      "\<And>x z. R (x,z) \<Longrightarrow> G x z"
+  shows "(P \<parallel>\<^bsub>M\<^esub> Q) \<parallel>\<^bsub>M\<^esub> R = P \<parallel>\<^bsub>M\<^esub> (Q \<parallel>\<^bsub>M\<^esub> R)"
+  by (rule ext, clarify; simp only: par_by_merge_eval; use fold operands in blast)
+
 
 end
