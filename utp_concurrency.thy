@@ -58,10 +58,47 @@ where
       :: ('a, 'b, 'c) mrg), z)"
 
 text \<open> mergeable:
-  M allows some final state for every prior x and branch results p and q. \<close>
+  M allows some final state for every prior x and branch results p and q.
+  In relational terms, M is total. \<close>
 
 abbreviation mergeable :: "'\<alpha> merge \<Rightarrow> bool" where
 "mergeable M \<equiv> (\<forall>x p q. \<exists>z. merge_eval M x p q z)"
+
+text \<open> Functional:
+  A deterministic merge M allows at most one final state for every prior x and
+  branch results p and q. In relational terms, M is functional, so we use UTP's Functional.
+  The lemma below states it with merge_eval. \<close>
+
+lemma Functional_merge_eval:
+  fixes M :: "'\<alpha> merge"
+  shows "Functional M \<longleftrightarrow>
+    (\<forall>x p q z1 z2. merge_eval M x p q z1 \<longrightarrow> merge_eval M x p q z2 \<longrightarrow> z1 = z2)"
+proof
+  assume "Functional M"
+  then show "\<forall>x p q z1 z2. merge_eval M x p q z1 \<longrightarrow> merge_eval M x p q z2 \<longrightarrow> z1 = z2"
+    by (auto simp add: Functional_def single_valued_def pred_rel_def)
+next
+  assume h: "\<forall>x p q z1 z2. merge_eval M x p q z1 \<longrightarrow> merge_eval M x p q z2 \<longrightarrow> z1 = z2"
+  show "Functional M"
+    unfolding Functional_def single_valued_def pred_rel_def
+  proof clarsimp
+    fix m :: "('\<alpha>, '\<alpha>, '\<alpha>) mrg" and y z
+    assume "M (m, y)" "M (m, z)"
+    then show "y = z" using h by (cases m) simp
+  qed
+qed
+
+text \<open> A mergeable and functional merge is a function f of the prior and the branches. \<close>
+
+lemma mergeable_Functional_fun:
+  assumes "mergeable M" "Functional M"
+  obtains f where "\<And>x p q z. merge_eval M x p q z \<longleftrightarrow> z = f x p q"
+proof
+  fix x p q z
+  show "merge_eval M x p q z \<longleftrightarrow> z = (SOME z. merge_eval M x p q z)"
+    using assms(1) someI_ex[of "merge_eval M x p q"] assms(2)[unfolded Functional_merge_eval]
+    by metis
+qed
 
 text \<open> skip is the merge predicate which ignores the output of both parallel predicates \<close>
 
