@@ -328,6 +328,29 @@ lemma par_by_merge_Sup_distr:
   "(\<Sqinter> A) \<parallel>\<^bsub>M\<^esub> Q = (\<Sqinter> P\<in>A. P \<parallel>\<^bsub>M\<^esub> Q)"
   by pred_auto
 
+(* P \<parallel> (Q \<or> R) = (P \<parallel> Q) \<or> (P \<parallel> R) *)
+lemma par_by_merge_disj_distl:
+  "P \<parallel>\<^bsub>M\<^esub> (Q \<or> R) = (P \<parallel>\<^bsub>M\<^esub> Q \<or> P \<parallel>\<^bsub>M\<^esub> R)"
+  by pred_auto
+
+(* (P \<or> Q) \<parallel> R = (P \<parallel> R) \<or> (Q \<parallel> R) *)
+lemma par_by_merge_disj_distr:
+  "(P \<or> Q) \<parallel>\<^bsub>M\<^esub> R = (P \<parallel>\<^bsub>M\<^esub> R \<or> Q \<parallel>\<^bsub>M\<^esub> R)"
+  by pred_auto
+
+text \<open> Conjunction only subdistributes: the two parallels on the left may use
+  different observations of the shared operand. \<close>
+
+(* (P \<parallel> Q) \<and> (P \<parallel> R) \<sqsubseteq> P \<parallel> (Q \<and> R) *)
+lemma par_by_merge_conj_subdistl:
+  "(P \<parallel>\<^bsub>M\<^esub> Q \<and> P \<parallel>\<^bsub>M\<^esub> R) \<sqsubseteq> P \<parallel>\<^bsub>M\<^esub> (Q \<and> R)"
+  by pred_auto
+
+(* (P \<parallel> R) \<and> (Q \<parallel> R) \<sqsubseteq> (P \<and> Q) \<parallel> R *)
+lemma par_by_merge_conj_subdistr:
+  "(P \<parallel>\<^bsub>M\<^esub> R \<and> Q \<parallel>\<^bsub>M\<^esub> R) \<sqsubseteq> (P \<and> Q) \<parallel>\<^bsub>M\<^esub> R"
+  by pred_auto
+
 lemma par_by_merge_false [simp]:
   "P \<parallel>\<^bsub>false\<^esub> Q = false"
   by (pred_auto)
