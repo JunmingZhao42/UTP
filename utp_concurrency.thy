@@ -351,6 +351,27 @@ lemma par_by_merge_conj_subdistr:
   "(P \<parallel>\<^bsub>M\<^esub> R \<and> Q \<parallel>\<^bsub>M\<^esub> R) \<sqsubseteq> (P \<and> Q) \<parallel>\<^bsub>M\<^esub> R"
   by pred_auto
 
+(* P \<sqsubseteq> P' \<Longrightarrow> P \<parallel>[M] Q \<sqsubseteq> P' \<parallel>[M] Q *)
+lemma par_by_merge_mono_left:
+  "P \<sqsubseteq> P' \<Longrightarrow> P \<parallel>\<^bsub>M\<^esub> Q \<sqsubseteq> P' \<parallel>\<^bsub>M\<^esub> Q"
+  by (simp add: pred_refine_iff par_by_merge_eval) blast
+
+(* Q \<sqsubseteq> Q' \<Longrightarrow> P \<parallel>[M] Q \<sqsubseteq> P \<parallel>[M] Q' *)
+lemma par_by_merge_mono_right:
+  "Q \<sqsubseteq> Q' \<Longrightarrow> P \<parallel>\<^bsub>M\<^esub> Q \<sqsubseteq> P \<parallel>\<^bsub>M\<^esub> Q'"
+  by (simp add: pred_refine_iff par_by_merge_eval) blast
+
+(* M \<sqsubseteq> M' \<Longrightarrow> P \<parallel>[M] Q \<sqsubseteq> P \<parallel>[M'] Q *)
+lemma par_by_merge_mono_merge:
+  "M \<sqsubseteq> M' \<Longrightarrow> P \<parallel>\<^bsub>M\<^esub> Q \<sqsubseteq> P \<parallel>\<^bsub>M'\<^esub> Q"
+  by (simp add: pred_refine_iff par_by_merge_eval) blast
+
+(* P \<sqsubseteq> P' \<and> Q \<sqsubseteq> Q' \<and> M \<sqsubseteq> M' \<Longrightarrow> P \<parallel>[M] Q \<sqsubseteq> P' \<parallel>[M'] Q' *)
+lemma par_by_merge_mono:
+  "\<lbrakk> P \<sqsubseteq> P'; Q \<sqsubseteq> Q'; M \<sqsubseteq> M' \<rbrakk> \<Longrightarrow> P \<parallel>\<^bsub>M\<^esub> Q \<sqsubseteq> P' \<parallel>\<^bsub>M'\<^esub> Q'"
+  by (rule ref_by_trans[OF ref_by_trans[OF par_by_merge_mono_left par_by_merge_mono_right]
+      par_by_merge_mono_merge])
+
 lemma par_by_merge_false [simp]:
   "P \<parallel>\<^bsub>false\<^esub> Q = false"
   by (pred_auto)
